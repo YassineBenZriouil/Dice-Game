@@ -1,29 +1,46 @@
-import React, { useState } from "react";
-import "./app.css";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import "./style.css";
 
-function App({ targetValue }) {
+function App() {
+    const { targetValue } = useParams(); // Get targetValue from URL
     const randGenerator = () => Math.floor(Math.random() * 6) + 1;
 
     const imageConcerned = (number) => {
         switch (number) {
             case 1:
-                return "https://www.svgrepo.com/show/334601/dice-1.svg";
+                return "https://www.calculator.net/img/dice1.png";
             case 2:
-                return "https://www.svgrepo.com/show/344130/dice-2-fill.svg";
+                return "https://www.calculator.net/img/dice2.png";
             case 3:
-                return "https://www.svgrepo.com/show/322175/dice-six-faces-three.svg";
+                return "https://www.calculator.net/img/dice3.png";
             case 4:
-                return "https://www.svgrepo.com/show/322172/dice-six-faces-four.svg";
+                return "https://www.calculator.net/img/dice4.png";
             case 5:
-                return "https://www.svgrepo.com/show/499117/dice-five.svg";
+                return "https://www.calculator.net/img/dice5.png";
             default:
-                return "https://www.svgrepo.com/show/499120/dice-six.svg";
+                return "https://www.calculator.net/img/dice6.png";
         }
     };
 
-    const [randomNumber, setRandomNumber] = useState(randGenerator());
-    const [imageSrc, setImageSrc] = useState(imageConcerned(randomNumber));
+    const [randomNumber, setRandomNumber] = useState(0);
+    const [imageSrc, setImageSrc] = useState(
+        "https://www.cranfield-colours.co.uk/wp-content/uploads/2022/01/cranfield-traditional-etching-ink-mid-black.jpg"
+    );
     const [fade, setFade] = useState(false);
+
+    // Initialize function to reset to 0
+    const initialize = () => {
+        setRandomNumber(0);
+        setImageSrc(
+            "https://www.cranfield-colours.co.uk/wp-content/uploads/2022/01/cranfield-traditional-etching-ink-mid-black.jpg"
+        );
+    };
+
+    // useEffect to run initialize when component mounts
+    useEffect(() => {
+        initialize(); // Set the number to 0 when the component loads
+    }, []);
 
     const handleClick = () => {
         setFade(true);
@@ -35,37 +52,26 @@ function App({ targetValue }) {
         }, 300);
     };
 
-    const initialize = () => {
-        setRandomNumber(0);
-        setImageSrc(
-            "https://www.cranfield-colours.co.uk/wp-content/uploads/2022/01/cranfield-traditional-etching-ink-mid-black.jpg"
-        );
-    };
-
     return (
-        <>
+        <div className="main_app_div">
             <div className="main_div">
-                <img
-                    className={`img ${fade ? "fade-out" : "fade-in"}`}
-                    src={imageSrc}
-                    alt="Random Number"
-                />
+                <img className="img" src={imageSrc} alt="Random Number" />
                 <h1 className="number" id="number">
                     {randomNumber}
                 </h1>
                 <button className="button" onClick={handleClick}>
                     Roll The Dice
-                </button>
+                </button>{" "}
                 <button className="button" onClick={initialize}>
                     Initialize
                 </button>
-            </div>{" "}
-            {randomNumber === targetValue && (
-                <p className="congratulations">
-                    Congratulations! You Found The Secret Number
-                </p>
-            )}
-        </>
+            </div>
+            <div className="congrats_div">
+                {randomNumber === parseInt(targetValue) && (
+                    <p className="congratulations">Congratulations! </p>
+                )}
+            </div>
+        </div>
     );
 }
 
